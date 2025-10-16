@@ -29,14 +29,14 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(URLNotFoundException.class)
 	public ResponseEntity<ErrorRepsponse> handleURLNotFoundException(URLNotFoundException ex){		
-		System.err.println("Handling URL Not Found Exception: " + ex.getMessage());
+		System.err.println("Handling \"URL Not Found Exception\": " + ex.getMessage());
 		ErrorRepsponse errorRepsponse = new ErrorRepsponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
 		return new ResponseEntity<>(errorRepsponse, HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorRepsponse> handleURLNotFoundException(Exception ex){		
-		System.err.println("Handling URL Not Found Exception: " + ex.getMessage());
+	public ResponseEntity<ErrorRepsponse> unkownError(Exception ex){		
+		System.err.println("Handling \"Uknown Exception\": " + ex.getMessage());
 		ErrorRepsponse errorRepsponse = new ErrorRepsponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.getMessage());
 		return new ResponseEntity<>(errorRepsponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}

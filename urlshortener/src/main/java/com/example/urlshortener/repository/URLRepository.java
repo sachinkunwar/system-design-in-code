@@ -15,7 +15,8 @@ public class URLRepository {
 	}
 	
 	public URL save(URL url) {
-		return map.put(url.getToken(), url);
+		map.put(url.getToken(), url);
+		return url;
 	}
 	
 	public URL findByToken(String token) {
