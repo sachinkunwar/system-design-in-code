@@ -2,7 +2,7 @@ package com.example.urlshortener.model;
 
 public class URL {
 	private long id;
-	private String longUrl;
+	private String originalUrl;
 	private String token;
 	private String shortUrl;
 	public long getId() {
@@ -11,11 +11,11 @@ public class URL {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getLongUrl() {
-		return longUrl;
+	public String getOriginalUrl() {
+		return originalUrl;
 	}
-	public void setLongUrl(String longUrl) {
-		this.longUrl = longUrl;
+	public void setOriginalUrl(String longUrl) {
+		this.originalUrl = longUrl;
 	}
 	public String getToken() {
 		return token;
@@ -31,6 +31,6 @@ public class URL {
 	}
 	@Override
 	public String toString() {
-		return "URL [id=" + id + ", longUrl=" + longUrl + ", token=" + token + ", shortUrl=" + shortUrl +"]";
+		return "URL [id=" + id + ", longUrl=" + originalUrl + ", token=" + token + ", shortUrl=" + shortUrl +"]";
 	}
 }

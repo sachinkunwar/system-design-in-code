@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 public class TokenManagerImpl implements TokenManager {
 	
 	private static long utilizedToken = 56800235584L;
-	private static final long SIZE = 360000L;
+	private static final long SIZE = 9999;
 
 	@Override
 	synchronized public List<Long> nextAvailableTokenRange() {
 		List<Long> range = new ArrayList<>();
-		range.add(utilizedToken + 1);
+		range.add(utilizedToken);
 		range.add(utilizedToken + SIZE);
-		utilizedToken = utilizedToken + SIZE;
+		utilizedToken = utilizedToken + SIZE + 1;
 		return range;
 	}
 

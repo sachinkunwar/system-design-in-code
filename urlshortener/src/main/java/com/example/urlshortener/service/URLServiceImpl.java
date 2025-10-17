@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.example.urlshortener.dto.request.URLShortenerRequestDTO;
 import com.example.urlshortener.exception.URLNotFoundException;
 import com.example.urlshortener.model.URL;
 import com.example.urlshortener.repository.URLRepository;
@@ -14,6 +16,7 @@ import com.example.urlshortener.repository.URLRepository;
 @Service
 public class URLServiceImpl implements URLService {
 	Logger logger = LogManager.getLogger(URLServiceImpl.class);
+	
 	private static final char[] baseChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 	
 	@Autowired
@@ -22,7 +25,9 @@ public class URLServiceImpl implements URLService {
 	@Autowired
 	TokenManager tokenManager;
 	
-	private static final String baseShortUrl = "localhost:8080/urlshortener/";
+	@Value("${shortUrl.baseUrl}")
+	private String baseShortUrl;
+	
 	private long currId;
 	private long lastId;
 	
@@ -33,11 +38,13 @@ public class URLServiceImpl implements URLService {
 	}
 
 	@Override
-	public URL generateShortUrl(URL url) {
-		logger.info("Generating short url for the given URL: "+url.getLongUrl());
+	public URL generateShortUrl(URLShortenerRequestDTO dto) {
+		logger.info("Generating short url for the given URL: "+dto.getOriginalUrl());
 		if(currId > lastId) {
 			updateAvailableTokenRange();
 		}
+		URL url  = new URL();
+		url.setOriginalUrl(dto.getOriginalUrl());
 		synchronized (this) {
 			url.setId(currId++);
 		}
@@ -45,14 +52,14 @@ public class URLServiceImpl implements URLService {
 		url.setShortUrl(baseShortUrl+url.getToken());
 		url = urlRepository.save(url);
 		if(url == null) {
-			throw new RuntimeException();
+			throw new RuntimeException("Something went wrong!");
 		}
 		return url;
 	}
 
 	@Override
 	public URL fetchUrl(String token) {
-		logger.info("Fetching Long URL for Given Token: "+token);
+		logger.info("Fetching Original URL for Given Token: "+token);
 		URL url = urlRepository.findByToken(token);
 		if(url == null) throw new URLNotFoundException("URL not found for the given token: "+token);
 		return url;
@@ -68,7 +75,7 @@ public class URLServiceImpl implements URLService {
 			id = id / base;
 			sb.append(baseChars[rem]);
 		}
-		return sb.toString();
+		return sb.reverse().toString();
 	}
 	
 	private void updateAvailableTokenRange(){
